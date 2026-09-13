@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
+</head>
+<body class='bg-gray-100 text-gray-800'>
+
+
+    <script>
+        document.onkeydown = function(e){
+            if (e.key == ('Backspace')){
+                window.location.replace('/')       
+            }
+        }
+    </script>
+    
+    {%if data%}
+
+    {%if grid == 'stndrt'%}
+    <div class="overflow-x-auto mt-3">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Расписание для {{values}}</h2>
+        <table class="w-11/12 bg-gray-50 rounded-md mx-auto bg-white border border-gray-300">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 w-1/30 px-2 py-2"></th>
+                    <th class="border border-gray-300 min-w-[150px] w-1/7 px-4 py-2 text-gray-800 text-[15px]">Понедельник {{dates.pnd}}</th>
+                    <th class="border border-gray-300 min-w-[150px] w-1/7 px-4 py-2 text-gray-800 text-[15px]">Вторник {{dates.ftr}}</th>
+                    <th class="border border-gray-300 min-w-[150px] w-1/7 px-4 py-2 text-gray-800 text-[15px]">Среда {{dates.srd}}</th>
+                    <th class="border border-gray-300 min-w-[150px] w-1/7 px-4 py-2 text-gray-800 text-[15px]">Четверг {{dates.cht}}</th>
+                    <th class="border border-gray-300 min-w-[150px] w-1/7 px-4 py-2 text-gray-800 text-[15px]">Пятница {{dates.ptn}}</th>
+                    <th class="border border-gray-300 min-w-[150px] w-1/7 px-4 py-2 text-gray-800 text-[15px]">Суббота {{dates.sbt}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for dat in data%}
+                <tr>
+                    <td class="border border-gray-300 w-1/30 px-2 py-2">{{loop.index}}</td>
+                    {%for da in dat%}
+                    <td class="border border-gray-300 w-1/7 px-4 py-2">
+                        {%for d in da%}
+                            {%if loop.index > 1%}<br>{%endif%}
+                            <p class='text-[15px] font-bold'><a class='hover:underline "transition-all duration-500' href='/select/{{d.disc}}/{{week}}'>{{d.disc}}</a></p>
+                            <p class='text-[15px]'><a class='hover:underline "transition-all duration-500' href='/select/{{d.prep}}/{{week}}'><i class="fa fa-graduation-cap text-xs text-gray-500" aria-hidden="true"></i> {{d.prep}}</a></p>
+                            <p class='text-[14px]'>
+                                <i class="fa fa-users  text-xs text-gray-500" aria-hidden="true"></i>
+                                {%for g in d.grop%}
+                                <a class='hover:underline "transition-all duration-500' href='/select/{{g}}/{{week}}'>{{g}}</a>
+                                {%endfor%}{%if d.pg != 'None'%} -{{d.pg}}{%endif%}
+                            </p>
+                            <p class='text-[15px]'><a class='hover:underline "transition-all duration-500' href='/select/{{d.kab}}/{{week}}'><i class="fa fa-home text-xs text-gray-500" aria-hidden="true"></i> {{d.kab}}</a>
+                                {%if d.type=='лаб.'%} <i class="fa fa-flask text-xs text-gray-500" aria-hidden="true"></i> ({{d.type}})
+                                {%elif d.type=='пр.'%} <i class="fa fa-wrench text-xs text-gray-500" aria-hidden="true"></i> ({{d.type}})
+                                {%elif d.type=='л.'%} <i class="fa fa-book text-xs text-gray-500" aria-hidden="true"></i> ({{d.type}})
+                                {%endif%}
+                            </p>
+                        {%endfor%}
+                    </td>
+                    {%endfor%}
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+
+
+    {%else%}
+
+    <div class="overflow-x-auto">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-4 mt-4">Расписание для {{values}}</h2>
+        {%for dat in data%}
+        {% if  loop.index == 1%}
+        <h1 class='p-2 text-[20px] ml-[5%]'>Понедельник {{dates.pnd}}</h1>
+        {%elif loop.index == 2%}
+        <h1 class='p-2 text-[20px] ml-[5%]'>Вторник {{dates.ftr}}</h1>
+        {%elif loop.index == 3%}
+        <h1 class='p-2 text-[20px] ml-[5%]'>Среда {{dates.srd}}</h1>
+        {%elif loop.index == 4%}
+        <h1 class='p-2 text-[20px] ml-[5%]'>Четверг {{dates.cht}}</h1>
+        {%elif loop.index == 5%}
+        <h1 class='p-2 text-[20px] ml-[5%]'>Пятница {{dates.ptn}}</h1>
+        {%elif loop.index == 6%}
+        <h1 class='p-2 text-[20px] ml-[5%]'>Суббота {{dates.sbt}}</h1>
+        {%endif%}
+        <table class="w-11/12 mx-auto bg-white border border-gray-300">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 w-1/30 px-2 py-2"></th>
+                    {%for y in cols%}
+                    <th class="border border-gray-300 w-1/{{cols|length + 1}} px-4 py-2">{{y}}</th>
+                    {%endfor%}
+                </tr>
+            </thead>
+            <tbody>
+                {%for da in dat%}
+                <tr>
+                    <td class="border border-gray-300 w-1/30 px-2 py-2">{{loop.index}}</td>
+                    {%for d in da%}
+                    <td class="border min-w-[150px] border-gray-300 w-1/{{cols|length + 1}} px-4 py-2">
+                        {%if d%}
+                        {%for p in d%}
+                            {%if loop.index > 1%}<hr class='text-gray-200 mt-2 mb-1'>{%endif%}
+                            <p class='text-[15px] font-bold'><a class='hover:underline "transition-all duration-500' href='/select/{{p.disc}}/{{week}}'>{{p.disc}}</a></p>
+                            {%if grid != 'prep'%}
+                                <p class='text-[15px]'><a class='hover:underline "transition-all duration-500' href='/select/{{p.prep}}/{{week}}'><i class="fa fa-graduation-cap text-xs text-gray-500" aria-hidden="true"></i> {{p.prep}}</a></p>
+                            {%endif%}
+                            {%if grid != 'grp'%}
+                                <p class='text-[14px]'>
+                                    <i class="fa fa-users  text-xs text-gray-500" aria-hidden="true"></i>
+                                    {%for g in p.grop%}
+                                    <a class='hover:underline "transition-all duration-500' href='/select/{{g}}/{{week}}'> {{g}}</a>
+                                    {%endfor%}
+                                    {%if p.pg != 'None'%} -{{p.pg}}{%endif%}
+                                </p>
+                            {%endif%}
+                            {%if p.type=='лаб.'%} <i class="fa fa-flask text-xs text-gray-500" aria-hidden="true"></i> ({{p.type}})
+                            {%elif p.type=='пр.'%} <i class="fa fa-wrench text-xs text-gray-500" aria-hidden="true"></i> ({{p.type}})
+                            {%elif p.type=='л.'%} <i class="fa fa-book text-xs text-gray-500" aria-hidden="true"></i> ({{p.type}})
+                            {%endif%}
+                            {%if grid != 'kab'%}
+                                <p class='text-[15px]'><a class='hover:underline "transition-all duration-500' href='/select/{{p.kab}}/{{week}}'><i class="fa fa-home text-xs text-gray-500" aria-hidden="true"></i> {{p.kab}}</a></p>
+                            {%endif%}
+                        {%endfor%}
+                        {%endif%}
+                    </td>
+                    {%endfor%}
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <br><br>
+        {%endfor%}
+    </div>
+    {%endif%}
+
+
+
+    {%else%}
+    <h1>НИЧЕГО НЕ ВЫБРАНО</h1>
+    {%endif%}
+
+</body>
+</html>

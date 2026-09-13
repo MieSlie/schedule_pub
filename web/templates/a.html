@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Index</title>
+
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+
+
+
+    <div class="flex flex-col items-center w-full max-w-2xl p-4">
+        <!-- Прокручиваемый список -->
+        <div id='listdiv' class=" overflow-y-auto max-h-40 w-full border border-gray-300 rounded-lg p-2 mb-4 bg-white shadow-lg">
+            <ul id='list' class="space-y-2">
+
+                <li><button class='flex focus:outline-none focus:ring-1 focus:ring-purple-500 w-full p-2 h-full rounded-lg bg-purple-50 hover:bg-purple-100 transition duration-200'>
+                    <svg class="w-5 h-5 text-purple-500 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/></svg>
+                    Элемент 1
+                </button></li>
+
+                <li><button onclick='add(this)' class='flex w-full p-2 h-full rounded-lg bg-purple-50 hover:bg-purple-100 transition duration-200 focus:outline-none '>
+                    <svg class="w-5 h-5 text-purple-500 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/></svg>
+                    2.213
+                </button></li>
+
+            </ul>
+        </div>
+
+        <!-- Инпут -->
+        <div class="mb-4 w-full">
+            <input id='main' tabindex="-1" type="text" name="command" oninput='maininput(this)' class="border border-purple-300 focus:outline-none focus:ring-2 focus:border-purple-500 focus:ring focus:ring-purple-200 rounded-lg p-2 w-full transition duration-200" placeholder="Поиск...">
+        </div>
+
+        <!-- Контейнер с блоками текста -->
+        <div id='resDiv' class="flex flex-nowrap space-x-1 justify-center items-center w-full">
+            
+        </div>
+
+    </div>
+    
+
+    
+
+</body>    
+
+</html>

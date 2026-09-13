@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
+    <title>Index</title>
+
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+
+    <script>
+        let commands = {}
+        let commands_list = []
+        commands = {{commands|tojson}}
+        for (key in commands){
+            commands[key].forEach((val) => {
+                commands_list.push(val)
+            })
+        }
+        console.log(commands_list)
+         
+    </script>
+
+    <div class="flex flex-col items-center w-full max-w-2xl p-4">
+        <!-- Прокручиваемый список -->
+        <div id='listdiv' class="hidden overflow-y-auto max-h-40 w-full border border-gray-300 rounded-lg p-2 mb-4 bg-white shadow-lg">
+            <ul id='list' class="space-y-2">
+
+                <li><button class='flex w-full p-2 h-full rounded-lg bg-purple-50 hover:bg-purple-100 transition duration-200'>
+                    <svg class="w-5 h-5 text-purple-500 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/></svg>
+                    Элемент 1
+                </button></li>
+
+            </ul>
+        </div>
+
+        <!-- Инпут -->
+        <div class="mb-4 w-full">
+            <input id='main' tabindex="-1" type="text" name="command" oninput='maininput(this)' class="border border-purple-300 focus:outline-none focus:ring-2 focus:border-purple-500 focus:ring focus:ring-purple-200 rounded-lg p-2 w-full transition duration-200" placeholder="Поиск...">
+        </div>
+
+        <!-- Контейнер с блоками текста -->
+        <div id='resDiv' class="flex flex-nowrap space-x-1 justify-center items-center w-full">
+            
+        </div>
+
+        <form  class="flex space-x-4" id='postform' action='/select' method="POST">
+            <input name='valus' type='hidden' id='postinput'>
+            <label for='week'><p class='mt-1 text-gray-600'>Неделя:</p></label>
+            <select name='week' tabindex="-1" class="border border-purple-300 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                {% for week in weeks %}
+                {% if week == cur_week%}
+                <option selected value="{{week}}">{{week}}</option>
+                {%else%}
+                    <option value="{{week}}">{{week}}</option>
+                {%endif%}
+                {% endfor %}
+            </select>
+            <!--
+            <select name='output' tabindex='-1'  class="border border-purple-300 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <option value="auto">Авто</option>
+                <option value="stndrt">стандарт</option>
+                <option value="prepods">по преподавателям</option>
+                <option value="auditoris">по аудиториям</option>
+                <option value="grupos">по группам</option>
+            </select>
+            -->
+        </form>
+    </div>
+    
+
+
+    <script>
+        document.getElementById('main').readOnly = true;
+        document.onkeydown = function(e){
+            if (e.code.startsWith('Key') || e.code.startsWith('Digit') || e.code == 'Space' || [',','.','-','Б','б','Ю','ю','х','Х','ъ','Ъ','ж','Ж','э','Э'].includes(e.key)){
+                document.getElementById('main').value += e.key
+                maininput(document.getElementById('main'))
+            }
+            else if (e.key == ('Backspace')){
+                if (document.getElementById('main').value){
+                    document.getElementById('main').value = document.getElementById('main').value.slice(0, -1)
+                    maininput(document.getElementById('main'))
+                }
+                else {
+                    document.getElementById('resDiv').lastChild.remove()
+                }
+            }
+            else if (e.code == 'Enter' && !document.getElementById('main').value){
+                els = document.getElementById('resDiv').getElementsByTagName("h3")
+                console.log(els)
+                console.log(els[1])
+                
+                for (let j = 0; j < els.length; j++){
+                    if (document.getElementById('postinput').value){
+                    document.getElementById('postinput').value += '+' + els[j].innerText}
+                    else{
+                    document.getElementById('postinput').value += els[j].innerText}
+                }
+                document.getElementById('postform').submit()
+            }
+            else if (e.key == ('ArrowUp')){
+                listels = document.getElementById('list').getElementsByTagName('li')
+                if (listels && window.list_index != 0){
+                    window.list_index -= 1
+                    listels[window.list_index].firstChild.focus()
+                }
+            }
+            else if (e.key == ('ArrowDown')){
+                listels = document.getElementById('list').getElementsByTagName('li')
+                if (listels && window.list_index != listels.length-1){
+                    window.list_index += 1
+                    listels[window.list_index].firstChild.focus()
+                }
+            }
+            console.log(e)
+        }
+        function maininput(tis){
+            document.getElementById('list').innerHTML = ''
+            if (tis.value.length > 2){
+                for (val of commands_list.reverse()){
+                    if (val.includes(tis.value)){
+                        document.getElementById('list').innerHTML += `
+                        <li><button onclick='add(this)' class='flex w-full p-2 h-full rounded-lg bg-purple-50 hover:bg-purple-100 transition duration-200 focus:outline-none focus:ring-1 focus:ring-purple-500 '>
+                            <i class="fa fa-angle-right text-purple-500 m-1" aria-hidden="true"></i>
+                            ${val}
+                        </button></li>
+                        `
+                    }
+                }
+                /////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!ТУТ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\
+                console.log(document.getElementById('list').getElementsByTagName('li'))
+                listels = document.getElementById('list').getElementsByTagName('li')
+                //listels[0].firstChild.focus()
+                window.list_index = listels.length-1
+                listels[window.list_index].firstChild.focus()
+                //document.getElementById('list').firstChild.firstChild.focus()
+            }
+
+            if (document.getElementById('listdiv').innerHTML != '') {
+                console.log('rm hidden')
+                document.getElementById('listdiv').classList.remove('hidden')
+            }
+            else { 
+                if (!document.getElementById('listdiv').classList.contains('hidden'))
+                document.getElementById('listdiv').classList.add('hidden')
+            }
+        }
+        function add(tis){
+            document.getElementById('resDiv').innerHTML += `
+                <div class="mb-4 bg-purple-100 border border-purple-300 rounded-lg py-2 px-3 shadow-md transition duration-200 hover:bg-purple-200">
+                    <h3 class="font-semibold text-purple-800">${tis.innerText}</h3>
+                </div>`
+            document.getElementById('main').value = ''
+            maininput(document.getElementById('main'))
+        }
+    </script>
+
+    
+
+</body>    
+
+</html>
